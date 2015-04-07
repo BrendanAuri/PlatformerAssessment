@@ -45,9 +45,9 @@ var fpsTime = 0;
 //chuckNorris.src = "hero.png";
 
 //ADDED THESE LINES
-//Connects the player.js and keyboard.js
 var keyboard = new Keyboard();
 var player = new Player();
+var enemy = new Enemy();
 
 function run()
 {
@@ -60,6 +60,9 @@ function run()
 	
 	player.update(deltaTime);
 	player.draw();
+	
+	enemy.update(deltaTime);
+	enemy.draw();
 		
 	// update the frame counter 
 	fpsTime += deltaTime;

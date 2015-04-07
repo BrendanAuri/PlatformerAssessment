@@ -1,8 +1,8 @@
-var Player = function()
+var Enemy = function()
 {
 	this.image = document.createElement("img");
 	
-	this.position = new Vector2(canvas.width/2, canvas.height/2);
+	this.position = new Vector2(canvas.width/4, canvas.height/2);
 	
 	this.width = 159;
 	this.height = 163;
@@ -14,10 +14,10 @@ var Player = function()
 	
 	this.rotation = 0;
 	
-	this.image.src = "hero.png";
+	this.image.src = "likelike.png";
 };
 
-Player.prototype.update = function(deltaTime)
+Enemy.prototype.update = function(deltaTime)
 {
 	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
 	{
@@ -29,7 +29,7 @@ Player.prototype.update = function(deltaTime)
 	}
 }
 
-Player.prototype.draw = function()
+Enemy.prototype.draw = function()
 {
 	context.save();
 		context.translate(this.position.x, this.position.y);
