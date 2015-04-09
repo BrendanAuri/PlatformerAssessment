@@ -44,3 +44,7 @@ Vector2.prototype.normalize = function(){
 	
 	return result;
 }
+
+Vector2.prototype.set = function(x, y){
+		return new Vector2();
+}
