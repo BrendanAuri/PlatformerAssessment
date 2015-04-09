@@ -49,6 +49,9 @@ var keyboard = new Keyboard();
 var player = new Player();
 var enemy = new Enemy();
 
+canvas.width = MAP.tw * TILE;
+canvas.height = MAP.th * TILE;
+
 var cells = [];
 
 function initializeCollision()
@@ -143,9 +146,10 @@ function run()
 		
 	// draw the FPS
 	context.fillStyle = "#f00";
-	context.font="14px Arial";
-	context.fillText("FPS: " + fps, 5, 20, 100);
+	context.font="30px Verdana";
+	context.fillText("FPS: " + fps, 5, 30, 1000);
 }
+
 initializeCollision();
 
 //-------------------- Don't modify anything below here
