@@ -73,12 +73,45 @@ function initializeCollision()
 				}
 				else if(cells[layerIdx][y][x] != 1) 
 				{
-				cells[layerIdx][y][x] = 0;
+					cells[layerIdx][y][x] = 0;
 				}
 				idx++
 			}
 		}
 	}
+}
+
+
+function tileToPixel(tile_coord)
+{
+	return tile_coord * TILE;
+}
+
+function pixelToTile(pixel)
+{
+	return Math.floor(pixel / TILE);
+}
+
+function cellAtTileCoord(layer, tx, ty)
+{
+	if (tx < 0 || tx > MAP.tw || ty < 0)
+	{
+		return 1;
+	}
+	
+	if (ty >= MAP.th)
+	{
+		return 0;
+	}
+	return cells[layer][ty][tx];
+}
+
+function cellAtPixelCoord(layer, x, y)
+{
+	var tx = pixelToTile(x);
+	var ty = pixelToTile(y);
+	
+	return cellAtTileCoord(layer, tx, ty);
 }
 
 function run()
@@ -113,7 +146,7 @@ function run()
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
 }
-
+initializeCollision();
 
 //-------------------- Don't modify anything below here
 

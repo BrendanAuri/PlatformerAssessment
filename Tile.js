@@ -1,5 +1,5 @@
-var LAYER_COUNT = 5;
-var MAP = {tw : 20, th : 15};
+var LAYER_COUNT = 3;
+var MAP = {tw : 60, th : 15};
 var TILE = 35;
 var TILESET_TILE = TILE * 2;
 var TILESET_PADDING = 2;
@@ -8,10 +8,8 @@ var TILESET_COUNT_X = 14;
 var TILESET_COUNT_Y = 14;
 
 var LAYER_BACKGOUND = 0;
-var LAYER_LADDERS = 1;
-var LAYER_ROPE = 2;
-var LAYER_DOOR = 3;
-var LAYER_PLATFORMS = 4;
+var LAYER_PLATFORMS = 1;
+var LAYER_LADDERS = 2;
 
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
@@ -37,35 +35,3 @@ function drawMap(){
 		}
 	}
 };
-
-function tileToPixel(tile_coord)
-{
-	return tile_coord * TILE;
-}
-
-function pixelToTile(pixel)
-{
-	return Math.floor(pixel / TILE);
-}
-
-function cellAtTileCoord(layer, tx, ty)
-{
-	if (tx < 0 || tx > MAP.tw || ty < 0)
-	{
-		return 1;
-	}
-	
-	if ( ty >= MAP.th)
-	{
-		return 0;
-	}
-	return cells[layer][tx][ty];
-}
-
-function cellAtPixelCoord(layer, x, y)
-{
-	var tx = pixelToTile(x);
-	var ty = pixelToTile(y);
-	
-	return cellAtTileCoord(layer, tx, ty);
-}

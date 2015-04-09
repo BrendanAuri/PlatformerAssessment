@@ -2,7 +2,7 @@ var Player = function()
 {
 	this.image = document.createElement("img");
 	
-	this.position = new Vector2(canvas.width/2, canvas.height/2);
+	this.position = new Vector2(100, 100);
 	
 	this.width = 159;
 	this.height = 163;
@@ -25,6 +25,7 @@ Player.prototype.update = function(deltaTime)
 	var playerAccel = 5000;
 	var playerDrag = 11;
 	var playerGravity = TILE * 9.8 * 6;
+	var jumpForce = 50000;
 	
 	acceleration.y = playerGravity;
 	
@@ -36,14 +37,16 @@ Player.prototype.update = function(deltaTime)
 	{
 		acceleration.x += playerAccel;
 	}
-	if(keyboard.isKeyDown(keyboard.KEY_UP))
+	if(keyboard.isKeyDown(keyboard.KEY_SPACE) && !this.jumping)
 	{
-		acceleration.y -= playerAccel;
-	}
-	if(keyboard.isKeyDown(keyboard.KEY_DOWN))
+		acceleration.y -= jumpForce;
+		this.jumping = true;
+	}	
+	if(!keyboard.isKeyDown(keyboard.KEY_SPACE))
 	{
-		acceleration.y += playerAccel;
+		this.jumping = false;
 	}
+	
 	var dragVector = this.velocity.multiplyScalar(playerDrag);
 	dragVector.y = 0;
 	acceleration = acceleration.subtract(dragVector)
@@ -54,9 +57,12 @@ Player.prototype.update = function(deltaTime)
 	var tx = pixelToTile(this.position.x);
 	var ty = pixelToTile(this.position.y);
 	
+	var nx = this.position.x % TILE;
+	var ny = this.position.y % TILE;
+	
 	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
 	var cell_right = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
-	var cell_left = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
+	var cell_down = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
 	var cell_diag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
 	
 	if (this.velocity.y > 0)
