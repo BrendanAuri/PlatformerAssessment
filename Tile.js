@@ -14,7 +14,7 @@ var LAYER_LADDERS = 2;
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
 
-function drawMap(){
+function drawMap(offSetX, offSetY){
 	for (var layerIdx = 0 ; layerIdx < LAYER_COUNT ; layerIdx++)
 	{
 		var idx = 0;
@@ -27,7 +27,7 @@ function drawMap(){
 					var tileIndex = level1.layers[layerIdx].data[idx] - 1;
 					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
 					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
-					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE, TILESET_TILE);
+					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE - offSetX , (y-1)*TILE - offSetY, TILESET_TILE, TILESET_TILE);
 
 				}
 				idx++;

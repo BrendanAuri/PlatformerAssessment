@@ -51,6 +51,8 @@ var fps = 0;
 var fpsCount = 0;
 var fpsTime = 0;
 
+var timer = 0;
+
 // load an image to draw
 //var chuckNorris = document.createElement("img");
 //chuckNorris.src = "hero.png";
@@ -60,7 +62,26 @@ var keyboard = new Keyboard();
 var player = new Player();
 var enemy = new Enemy();
 
-canvas.width = MAP.tw * TILE;
+var music = new Howl(
+{
+	urls: ["spor-blueroom.mp3"],
+	loop: true,
+	buffer: true,
+	volume: 0.5
+} );
+music.play();
+var sfx = new Howl(
+{
+	urls: ["fireEffect.ogg"],
+	buffer: true,
+	volume: 1,
+	onend: function() 
+	{
+		isSfxPlaying = false;
+	}
+} );
+
+canvas.width = 960;
 canvas.height = MAP.th * TILE;
 
 var cells = [];
@@ -132,19 +153,30 @@ function run()
 {
 	context.fillStyle = "#ccc";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
-	
-	drawMap();
+
+	var xScroll = player.position.x - canvas.width/2;
 	
 	var deltaTime = getDeltaTime();
 	
+	
 	//context.drawImage(chuckNorris, SCREEN_WIDTH/2 - chuckNorris.width/2, SCREEN_HEIGHT/2 - chuckNorris.height/2);
 	
-	player.update(deltaTime);
-	player.draw();
-	
-	//enemy.update(deltaTime);
-	//enemy.draw();
+	//Draw player
 		
+	if(xScroll < 0)
+		xScroll = 0;
+	if(xScroll >= MAP.tw * TILE - canvas.width)
+		xScroll = MAP.tw * TILE - canvas.width;
+	
+	drawMap(xScroll, 0);
+	
+	player.update(deltaTime);
+	player.draw(xScroll, 0);
+	
+	enemy.update(deltaTime);
+	enemy.draw(xScroll, 0);
+	
+	
 	// update the frame counter 
 	fpsTime += deltaTime;
 	fpsCount++;
@@ -154,11 +186,26 @@ function run()
 		fps = fpsCount;
 		fpsCount = 0;
 	}		
-		
-	// draw the FPS
+	
+
+	if(document.getElementById("FPS").checked == true)
+	{
+		// draw the FPS
+		context.fillStyle = "#f00";
+		context.font="bold 30px Verdana";
+		context.fillText("FPS: " + fps, 220, 55, 1000);
+	}
 	context.fillStyle = "#f00";
-	context.font="30px Verdana";
-	context.fillText("FPS: " + fps, 5, 30, 1000);
+	context.font="bold 30px Verdana";
+	context.fillText(Math.round(timer += deltaTime), 14, 100, 1000);
+	
+	var UI = new ui();
+	
+	//Lives & stuff	
+	for(var i = 0 ; i < player.lifeCount ; i++)
+	{
+		context.drawImage(player.lifeImage, 22 + (i * 36), 33, 26, 22);
+	}
 }
 
 initializeCollision();

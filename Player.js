@@ -17,7 +17,7 @@ var Player = function()
 		[65,66,67,68,69,70,71,72,73,74,75,76,77,78]);//Right walk animation
 	
 	this.velocity = new Vector2(0, 0);
-	this.position = new Vector2(100, 100);
+	this.position = new Vector2(100, 270);
 	this.width = 165;
 	this.height = 125;
 	
@@ -32,6 +32,10 @@ var Player = function()
 	this.direction = LEFT;
 	
 	this.rotation = 0;
+	
+	this.lifeCount = 5;
+	this.lifeImage = document.createElement("img");
+	this.lifeImage.src ="heart.png";
 	
 	for(var i = 0 ; i < ANIM_MAX ; i++)
 	{
@@ -65,9 +69,32 @@ Player.prototype.update = function(deltaTime)
 	var playerAccel = 5000;
 	var playerDrag = 11;
 	var playerGravity = TILE * 9.8 * 6;
-	var jumpForce = 50000;
+	var jumpForce = 55000;
 	
 	acceleration.y = playerGravity;
+	
+		
+	var collisionOffset = new Vector2(-8, this.height/2 - TILE);
+	
+	var collisionPos = this.position.add(collisionOffset);
+	
+	var tx = pixelToTile(collisionPos.x);
+	var ty = pixelToTile(collisionPos.y);
+	
+	var nx = collisionPos.x % TILE;
+	var ny = collisionPos.y % TILE;
+	
+	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
+	var cell_ladder = cellAtTileCoord(LAYER_LADDERS, tx, ty);
+	var cell_right = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
+	var cell_down = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
+	var cell_diag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
+	
+	if(keyboard.isKeyDown(keyboard.KEY_UP) && cell_ladder)
+	{
+		acceleration.y -= playerAccel;
+	}
+	
 	
 	if(keyboard.isKeyDown(keyboard.KEY_LEFT))
 	{
@@ -105,6 +132,7 @@ Player.prototype.update = function(deltaTime)
 	this.velocity = this.velocity.add(acceleration.multiplyScalar(deltaTime));
 	this.position = this.position.add(this.velocity.multiplyScalar(deltaTime));
 	
+
 	if(this.jumping || this.falling)
 	{
 		this.changeDirectionalAnimation(ANIM_JUMP_LEFT, ANIM_JUMP_RIGHT);
@@ -121,20 +149,6 @@ Player.prototype.update = function(deltaTime)
 		}
 	}
 	
-	var collisionOffset = new Vector2(-TILE/2, this.height/2 - TILE);
-	
-	var collisionPos = this.position.add(collisionOffset);
-	
-	var tx = pixelToTile(collisionPos.x);
-	var ty = pixelToTile(collisionPos.y);
-	
-	var nx = collisionPos.x % TILE;
-	var ny = collisionPos.y % TILE;
-	
-	var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
-	var cell_right = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
-	var cell_down = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
-	var cell_diag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
 	
 	if (this.velocity.y > 0)
 	{
@@ -143,6 +157,8 @@ Player.prototype.update = function(deltaTime)
 			this.position.y = tileToPixel(ty) - collisionOffset.y;
 			this.velocity.y = 0;
 			ny = 0;
+			
+			this.jumping = false;
 		}
 	}
 	else if (this.velocity.y < 0)
@@ -177,9 +193,19 @@ Player.prototype.update = function(deltaTime)
 			this.velocity.x = 0;
 		}
 	}
+	
+	
+	
+	//Countin' lives/deaths
+	if(player.position.y > canvas.height)
+	{
+		this.lifeCount -= 1;
+		player.velocity.y = 0;
+		player.position = new Vector2(100, 270);
+	}
 }
 
-Player.prototype.draw = function()
+Player.prototype.draw = function(offSetX, offSetY)
 {
-	this.sprite.draw(context, this.position.x, this.position.y)
+	this.sprite.draw(context, this.position.x - offSetX, this.position.y - offSetY)
 }
